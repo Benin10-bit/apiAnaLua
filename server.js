@@ -30,6 +30,7 @@ server.post("/create-product", async (req, reply) => {
     const productData = {
       title: "",
       description: "",
+      price: 0,
       quantity: 0,
       image_url: null,
     };

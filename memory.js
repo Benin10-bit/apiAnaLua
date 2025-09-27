@@ -13,8 +13,8 @@ export default class DataBase {
   async Create(data) {
     const id = crypto.randomUUID();
     await sql`
-      INSERT INTO products (id, title, description, quantity, imagem)
-      VALUES (${id}, ${data.title}, ${data.description}, ${data.quantity}, ${data.image_url})
+      INSERT INTO products (id, title, description, quantity, imagem, price)
+      VALUES (${id}, ${data.title}, ${data.description}, ${data.quantity}, ${data.image_url}, ${data.price})
     `;
     return id;
   }
