@@ -14,7 +14,7 @@ export default class DataBase {
     const id = crypto.randomUUID();
     await sql`
       INSERT INTO products (id, title, description, quantity, imagem)
-      VALUES (${id}, ${data.title}, ${data.description}, ${data.quantity}, ${data.imagem})
+      VALUES (${id}, ${data.title}, ${data.description}, ${data.quantity}, ${data.image_url})
     `;
     return id;
   }

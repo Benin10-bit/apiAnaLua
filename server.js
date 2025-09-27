@@ -54,11 +54,11 @@ server.post("/create-product", async (req, reply) => {
 
         if (uploadError) return reply.status(500).send(uploadError);
 
-        // Corrigido: getPublicUrl retorna um objeto simples
-        const { publicUrl } = supabase.storage
+        // Corrigido: getPublicUrl retorna data.publicUrl
+        const { data } = supabase.storage
           .from("imagens")
           .getPublicUrl(filename);
-        productData.image_url = publicUrl;
+        productData.image_url = data.publicUrl;
       } else if (part.fieldname in productData) {
         // É um campo de formulário
         productData[part.fieldname] = part.value;
