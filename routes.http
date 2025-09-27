@@ -1,26 +1,4 @@
-### Upload de arquivo
 POST http://localhost:1992/create-product
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
-
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="title"
-
-sex
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="description"
-
-Descrição do produto
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="imagem"; filename="foto.png"
-Content-Type: image/png
-
- ./foto.png
-------WebKitFormBoundary7MA4YWxkTrZu0gW--
-
-###
-
 GET  http://localhost:1992/catalog-products
-
-###
-
-PUT   http://localhost:1992/increase/7b5c8012-4bd5-4316-ae91-76e3373cadce
+PUT  http://localhost:1992/increase/:id 
+PUT  http://localhost:1992/decrease/:id 

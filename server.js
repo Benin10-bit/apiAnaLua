@@ -8,8 +8,10 @@ import DataBase from "./memory.js"; // DataBase adaptado para Postgres
 const server = Fastify();
 
 server.register(cors, {
-  origin: "*",
-  methods: "PUT, DELETE, POST, GET, OPTIONS",
+  origin: "*", // permite qualquer origem
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // array mais seguro
+  allowedHeaders: ["Content-Type", "Authorization"], // define headers permitidos
+  preflightContinue: false, // padrão
 });
 server.register(multipart, { limits: { fileSize: 5 * 1024 * 1024, files: 1 } });
 
@@ -31,7 +33,6 @@ server.post("/create-product", async (req, reply) => {
       quantity: 0,
       image_url: null,
     };
-
 
     for await (const part of parts) {
       if (part.file) {
@@ -82,6 +83,33 @@ server.post("/create-product", async (req, reply) => {
 server.get("/catalog-products", async (req, reply) => {
   const produtos = await dataBase.List();
   return reply.send(produtos);
+});
+
+server.put("/product/increase/:id", async (req, reply) => {
+  const { id } = req.params;
+  try {
+    const success = await dataBase.IncreaseStock(id);
+    if (!success)
+      return reply.status(404).send({ error: "Produto não encontrado" });
+    return reply.send({ message: "Estoque aumentado com sucesso" });
+  } catch (err) {
+    console.error(err);
+    return reply.status(500).send({ error: err.message });
+  }
+});
+
+// Diminuir estoque
+server.put("/product/decrease/:id", async (req, reply) => {
+  const { id } = req.params;
+  try {
+    const success = await dataBase.DecreaseStock(id);
+    if (!success)
+      return reply.status(404).send({ error: "Produto não encontrado" });
+    return reply.send({ message: "Estoque diminuído com sucesso" });
+  } catch (err) {
+    console.error(err);
+    return reply.status(500).send({ error: err.message });
+  }
 });
 
 server.listen({ port: 1992, host: "0.0.0.0" }, (err, address) => {
