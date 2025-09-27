@@ -2,11 +2,18 @@ import crypto from "crypto";
 import { sql } from "./db.js"; // ou onde você criou o neon instance
 
 export default class DataBase {
-
   // Listar todos os produtos
   async List() {
     const produtos = await sql`SELECT * FROM products`;
     return produtos;
+  }
+
+  async GetById(id) {
+    const produtos = await sql`
+    SELECT * FROM products
+    WHERE id = ${id}
+  `;
+    return produtos[0] || null; // retorna o produto ou null se não existir
   }
 
   // Criar um produto

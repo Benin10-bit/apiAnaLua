@@ -109,6 +109,24 @@ server.put("/product/decrease/:id", async (req, reply) => {
   }
 });
 
+// Buscar produto por ID
+server.get("/search/:id", async (req, reply) => {
+  const { id } = req.params;
+  try {
+    const produto = await dataBase.GetById(id);
+
+    if (!produto) {
+      return reply.status(404).send({ error: "Produto não encontrado" });
+    }
+
+    return reply.send(produto);
+  } catch (err) {
+    console.error(err);
+    return reply.status(500).send({ error: err.message });
+  }
+});
+
+
 server.delete("/product/:id", async (req, reply) => {
   const { id } = req.params;
   try {
