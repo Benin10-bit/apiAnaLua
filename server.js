@@ -108,6 +108,19 @@ server.put("/product/decrease/:id", async (req, reply) => {
   }
 });
 
+server.delete("/product/:id", async (req, reply) => {
+  const { id } = req.params;
+  try {
+    const success = await dataBase.Delete(id);
+    if (!success)
+      return reply.status(404).send({ error: "Produto não encontrado" });
+    return reply.send({ message: "Produto deletado com sucesso" });
+  } catch (err) {
+    console.error(err);
+    return reply.status(500).send({ error: err.message });
+  }
+});
+
 server.listen({ port: 1992, host: "0.0.0.0" }, (err, address) => {
   if (err) {
     console.error("Erro ao iniciar servidor:", err);

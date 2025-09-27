@@ -40,4 +40,13 @@ export default class DataBase {
     `;
     return updated.length > 0;
   }
+
+  async Delete(id) {
+    const deleted = await sql`
+      DELETE FROM products
+      WHERE id = ${id}
+      RETURNING *;
+    `;
+    return deleted.length > 0;
+  }
 }
