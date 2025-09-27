@@ -36,39 +36,35 @@ server.post("/create-product", async (req, reply) => {
 
     for await (const part of parts) {
       if (part.file) {
+        // É um arquivo
         const buffer = await part.toBuffer();
 
-        // detecta tipo MIME
         const type = await fileTypeFromBuffer(buffer);
         const mimeType = type ? type.mime : "application/octet-stream";
 
-        // nome único com extensão
-        const extension = part.filename.split(".").pop();
         const filename = generateUniqueFilename(part.filename);
 
-        // upload com MIME correto
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from("imagens")
           .upload(filename, buffer, {
             cacheControl: "3600",
             upsert: true,
-            contentType: mimeType, // ✅ define o tipo correto
+            contentType: mimeType,
           });
 
         if (uploadError) return reply.status(500).send(uploadError);
 
-        const { data: publicData } = supabase.storage
+        // Corrigido: getPublicUrl retorna um objeto simples
+        const { publicUrl } = supabase.storage
           .from("imagens")
           .getPublicUrl(filename);
-        productData.image_url = publicData.publicUrl;
-      } else {
-        if (part.fieldname in productData) {
-          productData[part.fieldname] = part.value;
-        }
+        productData.image_url = publicUrl;
+      } else if (part.fieldname in productData) {
+        // É um campo de formulário
+        productData[part.fieldname] = part.value;
       }
     }
 
-    // salva no banco de dados (Postgres via DataBase)
     const id = await dataBase.Create(productData);
 
     return reply
